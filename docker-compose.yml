@@ -1,8 +1,11 @@
 data:
+  container_name: orocommerce_data
   image: djocker/orodata
 source_code:
+  container_name: orocommerce_source
   image: djocker/orocommerce
 db:
+  container_name: orocommerce_db
   image: mysql:5.5
   expose:
     - "3306"
@@ -14,6 +17,7 @@ db:
   volumes_from:
     - data
 mail:
+  container_name: orocommerce_mail
   image: catatnight/postfix
   expose:
     - "25"
@@ -21,6 +25,7 @@ mail:
     - maildomain=localhost
     - smtp_user=user@localhost:password
 minion:
+  container_name: orocommerce_minion
   image: djocker/oromono
   links:
     - "db"
