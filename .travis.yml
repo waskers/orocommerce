@@ -1,0 +1,29 @@
+dist: xenial
+sudo: required
+language: bash
+
+services:
+  - docker
+
+branches:
+  only:
+    - master
+    - dev
+
+before_install:
+  - docker info
+  - docker-compose --version
+
+install:
+  - docker-compose -f $TRAVIS_BUILD_DIR/docker-compose.yml up -d
+  - until docker logs orocommerce_minion 2>&1 | grep 'Application is not installed!'; do sleep 5; done
+  - docker exec -it orocommerce_minion runuser -s /bin/sh -c 'composer --working-dir=/var/www install --dev' www-data
+  - docker exec -it orocommerce_minion runuser -s /bin/sh -c 'cp /var/www/app/config/parameters.yml /var/www/app/config/parameters_test.yml' www-data
+  - docker exec -it orocommerce_minion runuser -s /bin/sh -c '/var/www/app/console oro:install --no-interaction --timeout 3600 --force --drop-database --env=test --user-name=admin --user-firstname=John --user-lastname=Doe --user-password="admin1111" --user-email="johndoe@example.com" --organization-name="Acme" --application-url="http://minion/"' www-data
+  - docker exec -it orocommerce_minion runuser -s /bin/sh -c 'cp /var/www/app/config/parameters_test.yml /var/www/app/config/parameters.yml' www-data
+
+script:
+  - docker exec -it orocommerce_minion runuser -s /bin/sh -c '/var/www/vendor/phpunit/phpunit/phpunit -c /var/www/phpunit.xml.dist --testsuite unit' www-data
+
+after_failure:
+  - cat /var/www/app/logs/test.log

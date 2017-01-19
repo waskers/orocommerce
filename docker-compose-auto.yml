@@ -38,7 +38,7 @@ minion:
     - source_code
   environment:
     - CMD_INIT_BEFORE=
-    - CMD_INIT_CLEAN=runuser -s /bin/sh -c '/usr/bin/php /var/www/app/console oro:install --timeout 3600 --force --drop-database --env=prod --user-name=admin --user-firstname=John --user-lastname=Doe --user-password="admin1111" --user-email="johndoe@example.com" --organization-name="Acme" --application-url="http://localhost:3080/"' www-data
+    - CMD_INIT_CLEAN=runuser -s /bin/sh -c '/usr/bin/php /var/www/app/console oro:install --no-interaction --timeout 3600 --timeout 3600 --force --drop-database --env=prod --user-name=admin --user-firstname=John --user-lastname=Doe --user-password="admin1111" --user-email="johndoe@example.com" --organization-name="Acme" --application-url="http://localhost:3080/"' www-data
     - CMD_INIT_INSTALLED=
     - CMD_INIT_AFTER=
     - APP_DB_DRIVER=pdo_mysql
